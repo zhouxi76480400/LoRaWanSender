@@ -1,5 +1,4 @@
-import serial_asyncio
-import asyncio
+import serial
 
 from multiprocessing import Queue
 
