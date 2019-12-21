@@ -1,6 +1,7 @@
 from multiprocessing import Process, Queue
 import os
 import LoraSerial
+import UDPForwarder
 
 # UDP傳入訊息的port
 UDP_IN_PORT = 35000
@@ -11,25 +12,36 @@ UDP_OUT_PORT = 35001
 # 串列的port
 LORA_SERIAL_PORT = 'com1'
 
+# 一個lora包最大64bytes
+LORA_PACKET_MAX_BYTE_LENGTH = 64
+
 
 # 首先我們需要兩個執行緒
 
 # 和本地通訊用的process 需要指定入口port和出口port
-def udp_process(message_queue: Queue, in_port, out_port):
+def udp_process():
     print("udp process is :{0}".format(os.getpid()))
+    UDPForwarder.start_udp_forwarder()
 
 
 # 啓動串列執行緒
-def serial_process(message_queue: Queue, serial_port):
+def serial_process():
     print("lora process is :{0}".format(os.getpid()))
-    LoraSerial.start_lora_forwarder(message_queue, serial_port)
+    LoraSerial.start_lora_forwarder()
+
+
+# 請求通過lora發送的隊列
+request_send_queue = Queue()
+
+
+# 是否發送成功的隊列
+response_back_queue = Queue()
 
 
 if __name__ == '__main__':
     print("main process is :{0}".format(os.getpid()))
-    q = Queue()
-    process_udp = Process(target=udp_process, args=(q, UDP_IN_PORT, UDP_OUT_PORT,))
-    process_lora = Process(target=serial_process, args=(q, LORA_SERIAL_PORT,))
+    process_udp = Process(target=udp_process, args=())
+    process_lora = Process(target=serial_process, args=())
     process_udp.start()
     process_lora.start()
     process_lora.join()
