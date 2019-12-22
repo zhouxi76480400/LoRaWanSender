@@ -6,9 +6,6 @@ import UDPForwarder
 # UDP傳入訊息的port
 UDP_IN_PORT = 35000
 
-# UDP傳出訊息的port
-UDP_OUT_PORT = 35001
-
 # 串列的port
 LORA_SERIAL_PORT = '/dev/tty.usbserial-1410'
 

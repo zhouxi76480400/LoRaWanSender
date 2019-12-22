@@ -22,6 +22,8 @@ class LoRaTextObject:
     data_list: list
     # 唯一的識別碼
     unique_code: str
+    # 很重要的 這是往回發的依據
+    client_address: tuple
 
     raw: str  # 16進制化的str
 
@@ -68,6 +70,7 @@ class LoRaTextObject:
 
 
 # 生成object
-def get_a_lora_txt_object(data):
+def get_a_lora_txt_object(data, client_address: tuple):
     obj: LoRaTextObject = LoRaTextObject(data)
+    obj.client_address = client_address
     return obj
