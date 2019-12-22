@@ -29,9 +29,24 @@ class LoraHandleClass:
                     self.now_sending_text_obj = Sender.request_send_queue.get(block=True, timeout=None)
             else:
                 # 這邊要執行發送任務
+                # 總共要發送幾條
+                all_need_to_send_message_size = len(self.now_sending_text_obj.data_list)
+                # 現在發送了幾條
+                now_sent_message_size = self.now_sending_text_start_position_offset
+                if all_need_to_send_message_size - now_sent_message_size is 1:
+                    # 已經發完了 清除一下記錄
+                    self.now_sending_text_obj = None
+                    self.now_sending_text_start_position_offset = 0
+                    # 要在這邊做返回消息
+                else:
+                    # 從候補中拿出一跳進行發送
+                    now_want_to_send_message = self.now_sending_text_obj.data_list[now_sent_message_size]
+                    print(now_want_to_send_message)
+                    print(len(now_want_to_send_message))
+                    print("準備發送這條")
 
-                # 記得記錄順序發到了第幾條
-                print(self.now_sending_text_obj.data_list)
+
+
                 # print("bbbbb")
                 # print(self.now_sending_text_obj.raw)
                 # print(len(self.now_sending_text_obj.raw))
