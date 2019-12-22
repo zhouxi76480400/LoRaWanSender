@@ -75,7 +75,7 @@ class LoraHandleClass:
                     # 現在發送了幾條
                     now_sent_message_size = self.now_sending_text_start_position_offset
                     print("{0}: Now sent {1}, all {2}".format(__name__, now_sent_message_size,
-                                                             all_need_to_send_message_size))
+                                                              all_need_to_send_message_size))
                     if all_need_to_send_message_size - now_sent_message_size is 0:
                         # 已經發完了 清除一下記錄
                         self.now_sending_text_obj = None
@@ -119,7 +119,6 @@ class LoraHandleClass:
                                         # 休息一下
                                         time.sleep(0.05)
                                     print("{0}: UART-->{1}".format(__name__, lora_return))
-                        # 判斷這個封包有沒有發送成功， 發送成功則切換到下一個
 
 
 
