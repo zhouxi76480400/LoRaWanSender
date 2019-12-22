@@ -1,6 +1,7 @@
 from socketserver import BaseRequestHandler, UDPServer
 from multiprocessing import Queue
 import Sender
+import codecs
 import os
 import socket
 import LoRaTextObject
@@ -9,12 +10,14 @@ import LoRaTextObject
 class RequestHandler(BaseRequestHandler):
 
     def handle(self):
-        data = self.request[0].strip()
+        data: bytes = self.request[0].strip()
+        # str_data = data.decode('utf-8')
+        data_str_hex = data.hex()
         sock: socket.socket = self.request[1]
         client_address = self.client_address[0]
         # client_port = self.client_address[1]  # useless
         # 要把這個放到隊列中
-        text_obj: LoRaTextObject.LoRaTextObject = LoRaTextObject.get_a_lora_txt_object(data)
+        text_obj: LoRaTextObject.LoRaTextObject = LoRaTextObject.get_a_lora_txt_object(data_str_hex)
         # 進入隊列
         Sender.request_send_queue.put(text_obj, block=True, timeout=None)
 

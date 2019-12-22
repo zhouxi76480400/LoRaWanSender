@@ -10,10 +10,12 @@ UDP_IN_PORT = 35000
 UDP_OUT_PORT = 35001
 
 # 串列的port
-LORA_SERIAL_PORT = 'com1'
+LORA_SERIAL_PORT = '/dev/tty.usbserial-1410'
 
-# 一個lora包最大64bytes
-LORA_PACKET_MAX_BYTE_LENGTH = 64
+LORA_SERIAL_BAUDRATE = 115200
+
+# 一個lora包最大的hex字數
+LORA_PACKET_MAX_BYTE_LENGTH = 102
 
 
 # 首先我們需要兩個執行緒
