@@ -1,8 +1,6 @@
 from socketserver import BaseRequestHandler, UDPServer
 from multiprocessing import Queue
 import Sender
-import codecs
-import os
 import socket
 import LoRaTextObject
 

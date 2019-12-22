@@ -2,7 +2,6 @@ import serial
 import Sender
 import time
 import LoRaTextObject
-import struct
 
 from multiprocessing import Queue
 
@@ -47,7 +46,7 @@ class LoraHandleClass:
                     if now_uart_bytes_line == b'[LoRa]:Join Success\r\n':
                         is_reset_successful = True
                         is_waiting = False
-                    print(now_uart_bytes_line)
+                    print("{0}: UART-->{1}".format(__name__, now_uart_bytes_line))
             self.ser.close()
             if not is_reset_successful:
                 self.lora_init()
@@ -65,7 +64,7 @@ class LoraHandleClass:
                 if self.now_text_sending_failed:
                     # 不用繼續發送了 已經失敗 報告失敗
                     # 發送失敗消息
-                    print("發送失敗")
+                    print("{0}: Msg send failed".format(__name__))
                     self.now_sending_text_obj = None
                     self.now_sending_text_start_position_offset = 0
                     self.now_text_sending_failed = False
@@ -75,19 +74,20 @@ class LoraHandleClass:
                     all_need_to_send_message_size = len(self.now_sending_text_obj.data_list)
                     # 現在發送了幾條
                     now_sent_message_size = self.now_sending_text_start_position_offset
-                    print("現在發送了{0}條,一共有{1}條".format(now_sent_message_size,all_need_to_send_message_size))
+                    print("{0}: Now sent {1}, all {2}".format(__name__, now_sent_message_size,
+                                                             all_need_to_send_message_size))
                     if all_need_to_send_message_size - now_sent_message_size is 0:
                         # 已經發完了 清除一下記錄
                         self.now_sending_text_obj = None
                         self.now_sending_text_start_position_offset = 0
                         # 要在這邊做返回成功的消息
-                        print("發送成功")
+                        print("{0}: Msg Sent".format(__name__))
                     else:
                         # 從候補中拿出一跳進行發送
                         now_want_to_send_message: str = self.now_sending_text_obj.data_list[now_sent_message_size]
-                        print(now_want_to_send_message)
-                        print(len(now_want_to_send_message))
-                        print("準備發送這條")
+                        # print(now_want_to_send_message)
+                        # print(len(now_want_to_send_message))
+                        print("{0}: Prepare to send this message".format(__name__))
                         start_time = time.time()
                         # 最多重新嘗試一次
                         retry_count = 3
@@ -118,7 +118,7 @@ class LoraHandleClass:
                                         is_waiting = False
                                         # 休息一下
                                         time.sleep(0.05)
-                                    print(lora_return)
+                                    print("{0}: UART-->{1}".format(__name__, lora_return))
                         # 判斷這個封包有沒有發送成功， 發送成功則切換到下一個
 
 
@@ -135,7 +135,7 @@ class LoraHandleClass:
 
             # 判斷進入隊列中是否有元素
 
-            time.sleep(1)
+            # time.sleep(1)
 
 
 def start_lora_forwarder():

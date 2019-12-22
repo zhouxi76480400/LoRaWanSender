@@ -1,7 +1,6 @@
 import RandomGenerator
 import Sender
 import math
-import struct
 
 # 自定義封包的前面留出的兩個0-255的byte,所以對應成hex就是4個字 第一個byte說明這是第幾條 後一個byte說明一共有幾條
 LORA_PACKET_SPLIT_PREFIX_LENGTH = 4
