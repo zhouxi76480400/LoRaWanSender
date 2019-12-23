@@ -2,10 +2,24 @@ import serial
 import Sender
 import time
 import LoRaTextObject
-
-from multiprocessing import Queue
+import socket
 
 LORA_RESET_TIME_OUT = 60  # s
+
+
+def send_successful_message(text_object: LoRaTextObject):
+    print("{0}: send successful msg to port {1}".format(__name__, text_object.client_address[1]))
+    send_msg_use_udp(text_object.client_address, b'{\"result\":0}')
+
+
+def send_failed_message(text_object: LoRaTextObject):
+    print("{0}: send failed msg to port {0}".format(__name__, text_object.client_address[1]))
+    send_msg_use_udp(text_object.client_address, b'{\"result\":-1}')
+
+
+def send_msg_use_udp(client_address, msg: bytes):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.sendto(msg, client_address)
 
 
 class LoraHandleClass:
@@ -65,6 +79,7 @@ class LoraHandleClass:
                     # 不用繼續發送了 已經失敗 報告失敗
                     # 發送失敗消息
                     print("{0}: Msg send failed".format(__name__))
+
                     self.now_sending_text_obj = None
                     self.now_sending_text_start_position_offset = 0
                     self.now_text_sending_failed = False
@@ -78,10 +93,11 @@ class LoraHandleClass:
                                                               all_need_to_send_message_size))
                     if all_need_to_send_message_size - now_sent_message_size is 0:
                         # 已經發完了 清除一下記錄
+                        print("{0}: Msg Sent".format(__name__))
+                        send_successful_message(self.now_sending_text_obj)
                         self.now_sending_text_obj = None
                         self.now_sending_text_start_position_offset = 0
                         # 要在這邊做返回成功的消息
-                        print("{0}: Msg Sent".format(__name__))
                     else:
                         # 從候補中拿出一跳進行發送
                         now_want_to_send_message: str = self.now_sending_text_obj.data_list[now_sent_message_size]
@@ -119,22 +135,6 @@ class LoraHandleClass:
                                         # 休息一下
                                         time.sleep(0.05)
                                     print("{0}: UART-->{1}".format(__name__, lora_return))
-
-
-
-
-
-
-
-
-                # print("bbbbb")
-                # print(self.now_sending_text_obj.raw)
-                # print(len(self.now_sending_text_obj.raw))
-                # print(struct.pack("B", 255))
-
-            # 判斷進入隊列中是否有元素
-
-            # time.sleep(1)
 
 
 def start_lora_forwarder():
