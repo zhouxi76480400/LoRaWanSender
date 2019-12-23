@@ -12,7 +12,7 @@ LORA_SERIAL_PORT = '/dev/tty.usbserial-1410'
 LORA_SERIAL_BAUDRATE = 115200
 
 # 一個lora包最大的hex字數
-LORA_PACKET_MAX_BYTE_LENGTH = 102
+LORA_PACKET_MAX_BYTE_LENGTH = 96
 
 
 # 首先我們需要兩個執行緒
